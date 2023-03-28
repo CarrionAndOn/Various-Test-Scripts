@@ -18,6 +18,16 @@ for dirpath, dirnames, filenames in os.walk(base_folder):
         if song_name in filename.lower() and artist_name in filename.lower():
             matching_files.append(os.path.join(dirpath, filename))
 
+# check if the file is a supported file before doing anything
+file_extension = os.path.splitext(matching_files[0])[1]
+if file_extension not in ('.mp3', '.flac', '.wav'):
+    print("File not mp3, flac, or wav, metadata check will fail.")
+    print("Or it failed to find the right file.")
+    print(f"Searched for: {matching_files[0]}")
+    print("If you have .lrc files in the same directory, it may be searching for the lrc file instead of the audio "
+          "file.")
+    exit()
+
 if matching_files:
     # remove pycharm's errors about undefined variables
     audio = None
@@ -28,12 +38,14 @@ if matching_files:
 
     # check if the file is a FLAC or MP3 and use the appropriate method to get the metadata
     if matching_files[0].endswith('.flac'):
+        print("FLAC file, metadata possible")
         audio = FLAC(matching_files[0])
         track_name = audio['title'][0]
         artist_name = audio['artist'][0]
         album_name = audio['album'][0]
         year = audio['date'][0]
     elif matching_files[0].endswith('.mp3'):
+        print("MP3 file, metadata possible")
         audio = EasyID3(matching_files[0])
         track_name = audio['title'][0]
         artist_name = audio['artist'][0]
@@ -64,3 +76,6 @@ if matching_files:
 
 else:
     print("No matching music file found.")
+    print(f"Searched for: {matching_files[0]}")
+    print("If you have .lrc files in the same directory, it may be searching for the lrc file instead of the audio "
+          "file.")
