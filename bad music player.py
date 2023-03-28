@@ -7,17 +7,18 @@ from mutagen.easyid3 import EasyID3
 base_folder = "I:/Music"
 
 # ask the user what song they want
-input_text = input("Enter a song name: ")
+song_name = input("Enter a song name: ").lower()
+artist_name = input("Enter the artist's name: ").lower()
 
-# search the folders for the requested song
+# search the folders for the requested song and artist
 matching_files = []
 for dirpath, dirnames, filenames in os.walk(base_folder):
     for filename in filenames:
-        if input_text in filename:
+        if song_name in filename.lower() and artist_name in filename.lower():
             matching_files.append(os.path.join(dirpath, filename))
 
 if matching_files:
-    # get the song's name, artist, and album
+    # remove pycharm's errors about undefined variables
     audio = None
     track_name = None
     artist_name = None
